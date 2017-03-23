@@ -60,18 +60,15 @@ Scan every 5 seconds and only display the specified devices whether they are onl
         module: 'MMM-NetworkScanner',
         position: 'top_left', 
         config: {
-            devices: [
-                    { ipAddress: "github.com", name: "Github", icon: "globe"},
-                    { macAddress: "1a:1b:1c:1a:1b:1c", name: "Server", icon: "server"},
-                    { macAddress: "2a:2b:2c:2a:2b:2c", name: "Desktop", icon: "desktop"},
-                    { ipAddress: "10.1.1.10", name: "Laptop", icon: "laptop"},
-                    { macAddress: "4a:4b:4c:4a:4b:4c", name: "Mobile", icon: "mobile"},
+                            /* beriem do uvahy len macAddress udaje zariadeni ktore sa sleduju */
+                    { macAddress: "1a:1b:1c:1a:1b:1c", name: "Mobil 1", icon: "mobile"},
+                    { macAddress: "1d:1d:1d:1d:1d:1d", name: "Mobil 2", icon: "mobile"},
                 ],
             showUnknown: false,
-            showOffline: true,
+            showOffline: false,
             keepAlive: 300,
-            updateInterval: 5
-            residents: "Mobile",
+            updateInterval: 5,
+            residents: [], /* nema zmysel, zrusil som to */
             occupiedCMD: {notification: 'REMOTE_ACTION', payload: {action: 'MONITORON'}},
             vacantCMD  : {notification: 'REMOTE_ACTION', payload: {action: 'MONITOROFF'}},
 

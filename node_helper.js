@@ -27,7 +27,7 @@ module.exports = NodeHelper.create({
 
         if (notification === "SCAN_NETWORK") {
             this.scanNetworkMAC();
-            this.scanNetworkIP();
+            //this.scanNetworkIP();
             return true;
         }
 

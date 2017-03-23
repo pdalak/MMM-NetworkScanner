@@ -34,6 +34,7 @@ Module.register("MMM-NetworkScanner", {
 
         // variable for if anyone is home
         this.occupied = true;
+        this.lastSeen = moment();
 
         moment.locale(config.language);
 
@@ -60,7 +61,7 @@ Module.register("MMM-NetworkScanner", {
 
         var self = this;
 
-        if (notification === 'IP_ADDRESS') {
+        /**if (notification === 'IP_ADDRESS') {
             if (payload.hasOwnProperty("ipAddress")) {
                 // set last seen
                 if (payload.online) {
@@ -69,7 +70,7 @@ Module.register("MMM-NetworkScanner", {
                 // Keep alive?
                 payload.online = (moment().diff(payload.lastSeen, 'seconds') < this.config.keepAlive);
             }
-        }
+        }// */
 
         if (notification === 'MAC_ADDRESSES') {
             if (this.config.debug) Log.info(this.name + " MAC_ADDRESSES payload: ", payload);
@@ -81,14 +82,14 @@ Module.register("MMM-NetworkScanner", {
                 var device = this.networkDevices[i];
                 // Set last seen
                 if (device.online) {
-                    device.lastSeen = moment();
+                    this.lastSeen = moment();
                 }
                 // Keep alive?
-                device.online = (moment().diff(device.lastSeen, 'seconds') < this.config.keepAlive);
+                //PD device.online = (moment().diff(device.lastSeen, 'seconds') < this.config.keepAlive);
             }
 
             // Add offline devices from config
-            if (this.config.showOffline) {
+            /** if (this.config.showOffline) {
                 for (var d = 0; d < this.config.devices.length; d++) {
                     var device = this.config.devices[d];
 
@@ -104,29 +105,32 @@ Module.register("MMM-NetworkScanner", {
                         this.networkDevices.push(device);
                     }
                 }
-            }
+            } // */
 
             // Sort list by known device names, then unknown device mac addresses
-            this.networkDevices.sort(function (a, b) {
+            /** this.networkDevices.sort(function (a, b) {
                 var stringA, stringB;
                 stringA = (a.type != "Unknown" ? "_" + a.name + a.macAddress : a.name);
                 stringB = (b.type != "Unknown" ? "_" + b.name + b.macAddress : b.name);
 
                 return stringA.localeCompare(stringB);
-            });
+            });// */
 
 
             // Send notification if user status has changed
-            if (this.config.residents.length > 0) {
+            if (1){ //PDthis.config.residents.length > 0) {
                 var anyoneHome, command;
 //                self = this;
                 anyoneHome = 0;
 
-                this.networkDevices.forEach(function (device) {
+                /** this.networkDevices.forEach(function (device) {
                     if (self.config.residents.indexOf(device.name) >= 0) {
                         anyoneHome = anyoneHome + device.online;
                     }
-                });
+                });*/ 
+                if (moment().diff(this.lastSeen, 'seconds') < this.config.keepAlive){
+                    anyoneHome = 1;
+                }
 
                 if (this.config.debug) Log.info("# people home: ", anyoneHome);
                 if (this.config.debug) Log.info("Was occupied? ", this.occupied);
