@@ -32,6 +32,8 @@ Module.register("MMM-NetworkScanner", {
         Log.info("Starting module: " + this.name);
         if (this.config.debug) Log.info(this.name + " config: ", this.config);
 
+      
+        this.myTimer = 0;
         // variable for if anyone is home
         this.occupied = true;
         this.lastSeen = moment();
@@ -55,6 +57,21 @@ Module.register("MMM-NetworkScanner", {
         return ["moment.js"];
     },
 
+    notificationReceived: function(notification, payload, sender) {
+        if (sender) {
+            Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name);
+            if (notification === "MONITOROFF") {
+                this.stopScan(); 
+            }
+            if (notification === "MONITORON") {
+                this.occupied = true; 
+                this.lastSeen = moment();
+                this.scanNetwork();
+            }
+        } else { 
+            
+        }
+    },
     // Subclass socketNotificationReceived method.
     socketNotificationReceived: function (notification, payload) {
         if (this.config.debug) Log.info(this.name + " received a notification: " + notification, payload);
@@ -236,9 +253,15 @@ Module.register("MMM-NetworkScanner", {
         if (this.config.debug) Log.info(this.name + " is initiating network scan");
         var self = this;
         this.sendSocketNotification('SCAN_NETWORK');
-        setInterval(function () {
+        this.myTimer = setInterval(function () {
             self.sendSocketNotification('SCAN_NETWORK');
         }, this.config.updateInterval * 1000);
+        return;
+    },
+    stopScan: function () {
+        if (this.config.debug) Log.info(this.name + " is stopping network scan");
+        var self = this;
+        clearInterval(this.myTimer);
         return;
     },
 
